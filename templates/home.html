@@ -1,0 +1,32 @@
+{% extends "base.html"%}
+
+{% block aside %}
+<aside id="colorlib-aside" role="complementary" class="js-fullheight">
+    <nav id="colorlib-main-menu" role="navigation">
+        <ul>
+            <li class="colorlib-active" name="upload"><a href="/dash" name="home">Beranda</a></li>
+            <li><a href="/dash/upload">Upload Gambar</a></li>
+            <li><a href="/logout" name="logout">Logout</a></li>
+        </ul>
+    </nav>
+</aside> <!-- END COLORLIB-ASIDE -->
+{% endblock %}
+
+{% block main %}
+<div class="container-fluid px-3 px-md-0">
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <h1 class="h2">PBL Kelompok 1</h1>
+            <p>Hai! Project website ini dibuat oleh Kelompok PBL 1 Prodi Rekayasa Keamanan Siber kelas 1B Pagi. Tujuan kami membuat project ini adalah untuk memenuhi tugas matakuliah Algoritma dan Pemrograman, Dasar Keamanan Siber, dan Literasi Data. Selamat bereksplorasi.</p>
+        </div>
+        <div class="col-md-6">
+            <h2 class="h4">Apa ini?</h2>
+            <p>Kami membuat project website untuk melacak lokasi seseorang berdasarkan gambar. Untuk alat yang kami gunakan adalah exif.js dan Google Maps API untuk memvisualisasikan lokasi gambar yang sudah didapat.</p>
+        </div>
+        <div class="col-md-6">
+            <h2 class="h4">Bagaimana caranya?</h2>
+            <p>Pertama-tama, teman-teman klik teks "Upload Gambar". Kemudian, teman-teman bisa pilih gambar yang akan di cek apakah ada lokasi atau tidak. Tenang saja, gambar dan data lokasi tidak diupload ke server kok. Jadi hanya kamu yang bisa melihat lokasinya saja.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

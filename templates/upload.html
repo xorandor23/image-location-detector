@@ -1,0 +1,175 @@
+{% extends "base.html"%}
+
+{% block aside %}
+<aside id="colorlib-aside" role="complementary" class="js-fullheight">
+    <nav id="colorlib-main-menu" role="navigation">
+        <ul>
+            <li><a href="/dash" name="home">Beranda</a></li>
+            <li class="colorlib-active" name="upload"><a href="/dash/upload">Upload Gambar</a></li>
+            <li><a href="/logout" name="logout">Logout</a></li>
+        </ul>
+    </nav>
+</aside> <!-- END COLORLIB-ASIDE -->
+{% endblock %}
+
+{% block main %}
+<section class="ftco-section pt-4 mb-5 ftco-intro">
+    <div class="file-upload-container">
+        <div class="upload-area" id="uploadArea" onClick="document.getElementById('fileInput').click();" onDrop="handleDrop(event)" onDragOver="event.preventDefault();">
+            <input type="file" id="fileInput" multiple accept="image/*" hidden onChange="handleFileUpload(event)">
+            <div class="upload-icon">📁</div>
+            <div class="upload-text">
+                <span class="upload-button">Klik untuk upload</span>
+                atau drag & drop
+            </div>
+            <p class="upload-hint">PNG, JPG, GIF sampai 10MB</p>
+        </div>
+        <div class="preview-container" id="previewContainer" style="text-align: center;">
+            <img id="imagePreview" src="" alt="Preview" style="display:none; max-width: 100%; margin-top: 1rem;" />
+            <button id="discardButton" style="display:none; margin-top: 1rem;" onclick="discardImage()">❌</button>
+        </div>
+        <div class="metadata-container" id="metadataContainer" style="display:none;">
+            <h2>Informasi</h2>
+            <div id="metadataInfo"></div>
+            <div class="button-container">
+                <button id="downloadButton" class="button-classic download-clean-button" style="display:none; width: 100%">Unduh dan Amankan Gambar</button>
+            </div>
+        </div>
+    </div>    
+</section>
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+<script>
+
+    function convertToDecimal(coordinate, reference) {
+        const [degrees, minutes, seconds] = coordinate;
+        let decimal = degrees + minutes / 60 + seconds / 3600;
+        if (reference === 'S' || reference === 'W') {
+            decimal *= -1; // Negasikan untuk Selatan atau Barat
+        }
+        return decimal;
+    }
+
+    function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.src = e.target.result;
+                imagePreview.style.display = 'block'; // Menampilkan gambar preview
+                imagePreview.style.maxWidth = '100%'; // Mengatur lebar maksimum gambar
+                imagePreview.style.height = 'auto'; // Mengatur tinggi otomatis untuk menjaga rasio aspek
+                document.getElementById('discardButton').style.display = 'block'; // Menampilkan tombol silang
+                const metadataContainer = document.getElementById('metadataContainer');
+                const metadataInfo = document.getElementById('metadataInfo');
+                metadataContainer.style.display = 'block'; // Menampilkan kontainer metadata
+        
+                const img = new Image();
+                img.src = e.target.result;
+                
+                img.onload = function() {
+                    EXIF.getData(img, function() {
+                        const data = EXIF.getAllTags(this);
+                        if (data.GPSLatitude) {
+                            const lat = convertToDecimal(data.GPSLatitude, data.GPSLatitudeRef);
+                            const lon = convertToDecimal(data.GPSLongitude, data.GPSLongitudeRef);
+                            metadataInfo.innerHTML = `
+                                <div class="mapouter">
+                                    <div class="gmap_canvas">
+                                        <iframe class="gmap_iframe" width="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=600&amp;height=400&amp;hl=en&amp;q=${lat},${lon}&amp;output=embed">
+                                        </iframe>
+                                        <a href="https://embed-googlemap.com">embed google map</a>
+                                    </div>
+                                    <style>
+                                        .mapouter {
+                                            position:relative;
+                                            text-align:right;
+                                            width:100%;
+                                            height:400px;
+                                        }
+                                        .gmap_canvas {
+                                            overflow:hidden;
+                                            background:none!important;
+                                            width:100%;height:400px;
+                                            }
+                                        .gmap_iframe {
+                                            height:400px!important;
+                                        }
+                                    </style>
+                                </div>
+                            `
+                            document.getElementById('downloadButton').style.display = 'block'; // Menampilkan tombol download
+                        } else {                             
+                            metadataInfo.innerHTML = `<h3>Lokasi tidak ditemukan, gambar aman!</h3>`
+                        }
+                    });
+                };
+            };
+            reader.readAsDataURL(file);
+        } else {
+            console.log("not found")
+        }
+    }
+
+    function discardImage() {
+        const imagePreview = document.getElementById('imagePreview');
+        imagePreview.src = '';
+        imagePreview.style.display = 'none'; // Menyembunyikan gambar preview
+        document.getElementById('discardButton').style.display = 'none'; // Menyembunyikan tombol silang
+        document.getElementById('fileInput').value = ''; // Menghapus input file
+        document.getElementById('metadataContainer').style.display = 'none'; // Menyembunyikan kontainer metadata
+    }
+
+    document.getElementById("fileInput").addEventListener("change", function (event) {
+    const file = event.target.files[0];
+      if (file) {
+        removeMetadata(file);
+      }
+    });
+
+    function removeMetadata(file) {
+      const reader = new FileReader();
+
+      reader.onload = function (e) {
+        const img = new Image();
+        img.src = e.target.result;
+
+        img.onload = function () {
+          // Create a canvas to process the image
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
+
+          // Set canvas size to the image's width and height
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          // Draw the image on the canvas (removes metadata)
+          ctx.drawImage(img, 0, 0);
+        
+            const date = new Date();
+            const filename = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}_${date.getHours().toString().padStart(2, '0')}-${date.getMinutes().toString().padStart(2, '0')}-${date.getSeconds().toString().padStart(2, '0')}.jpg`;
+          // Convert canvas to Blob (new image without metadata)
+          canvas.toBlob((blob) => {
+            // Enable the download button
+            document.getElementById("downloadButton").disabled = false;
+            // Store the Blob for downloading
+            document.getElementById("downloadButton").onclick = function () {
+              // Create a download link for the new image
+              const link = document.createElement("a");
+              link.href = URL.createObjectURL(blob);
+              link.download = filename; // You can change the filename here
+              link.click();
+            };
+          }, "image/jpeg", 1.0);
+        };
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+</script>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+{% endblock %}

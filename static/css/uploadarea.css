@@ -1,0 +1,198 @@
+/* Container utama */
+.file-upload-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 2rem;
+    /* Efek glass morphism */
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+/* Area upload */
+.upload-area {
+    border: 2px dashed rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    padding: 2.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.upload-area:hover,
+.upload-area.dragging {
+    border-color: rgba(99, 102, 241, 0.8);
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Icon upload */
+.upload-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    color: rgba(99, 102, 241, 0.7);
+}
+
+/* Teks upload */
+.upload-text {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.upload-button {
+    color: rgb(99, 102, 241);
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.upload-button:hover {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+/* Hint text */
+.upload-hint {
+    color: rgba(107, 114, 128, 0.8);
+    font-size: 0.875rem;
+}
+
+/* Container preview */
+.preview-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+}
+
+/* Item preview */
+.preview-item {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.preview-item:hover {
+    transform: scale(1.05);
+}
+
+/* Gambar preview */
+.preview-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Tombol hapus */
+.remove-button {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.preview-item:hover .remove-button {
+    opacity: 1;
+}
+
+.remove-button:hover {
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+}
+
+/* Animasi tambahan */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.preview-item {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.metadata-container {
+    margin-top: 20px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+}
+
+/* Tombol untuk menghapus metadata */
+.remove-metadata-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.remove-metadata-button:hover {
+    background: rgba(239, 68, 68, 1);
+}
+
+/* Tombol untuk mengunduh gambar tanpa metadata */
+.download-clean-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(99, 102, 241, 0.9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.download-clean-button:hover {
+    background: rgba(99, 102, 241, 1);
+}
+
+/* Tambahan untuk fungsi baru */
+.upload-area:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+}
+
+/* Tombol untuk submit gambar dan analisis metadata */
+.submit-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(34, 197, 94, 0.9);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.submit-button:hover {
+    background: rgba(34, 197, 94, 1);
+}
