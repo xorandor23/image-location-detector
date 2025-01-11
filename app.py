@@ -5,12 +5,11 @@ from flask import Flask, session, url_for, render_template, redirect, request, f
 
 app = Flask(__name__)
 app.secret_key = "#kel1!"
-conn = db.connect(database="YOUR_DATABASE", 
-                        user="YOUR_USER", 
-                        password="YOUR_PASSWORD", 
-                        host="YOUR_HOST", 
-                        port=5432 ) # Replace this with your port
-curs = conn.cursor()
+conn = db.connect(database="neondb", 
+                        user="neondb_owner", 
+                        password="VnhKeTskvQ17", 
+                        host="ep-rapid-moon-a1bbcvs4.ap-southeast-1.aws.neon.tech", 
+                        port=5432)
 query = "SELECT * FROM user_cred WHERE email = %s;"
 reg_query = "INSERT INTO user_cred VALUES (%s, %s, %s)"
 proh_char = set('!@#$%^&*()+=[]{};:\'"<>,.?/|\\~ ')
@@ -58,16 +57,16 @@ def login():
 def regist():
     if "reg" in session:
         try:
-            curs.execute(reg_query, (session['username-reg'], session['email-reg'], session['pass-reg']))
-            conn.commit()
-            flash("Daftar berhasil, silahkan login!")
-            return redirect(url_for("login"))
+            with conn.cursor() as curs:
+                curs.execute(reg_query, (session['username-reg'], session['email-reg'], session['pass-reg']))
+                conn.commit()
+                flash("Daftar berhasil, silahkan login!")
+                return redirect(url_for("login"))
         except db.Error as e:
             flash(f'Terjadi kesalahan: {e}')
             return redirect(url_for("login"))
         finally:
             session.pop('reg', None)
-            cursor = conn.cursor()
     else:
         flash("Isi form register terlebih dahulu!")
         return redirect(url_for("login"))
@@ -77,8 +76,9 @@ def regist():
 def loginrdr():
     if "login-rdr" in session:
         try:
-            curs.execute(query, (session["email"],))
-            result = curs.fetchone()
+            with conn.cursor() as curs:
+                curs.execute(query, (session["email"],))
+                result = curs.fetchone()
 
             if result is None:
                 flash("data tidak ditemukan")
@@ -95,9 +95,9 @@ def loginrdr():
                 return redirect(url_for("login"))
         except db.Error as e:
             flash(f"Terjadi kesalahan pada sistem. {e}")
-            session.pop("login-rdr", None)
-            cursor = conn.cursor()
             return redirect(url_for("login"))
+        finally:
+            session.pop("login-rdr", None)
     else:
         return redirect(url_for("login"))
 
