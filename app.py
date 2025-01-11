@@ -5,11 +5,11 @@ from flask import Flask, session, url_for, render_template, redirect, request, f
 
 app = Flask(__name__)
 app.secret_key = "#kel1!"
-conn = db.connect(database="neondb", 
-                        user="neondb_owner", 
-                        password="VnhKeTskvQ17", 
-                        host="ep-rapid-moon-a1bbcvs4.ap-southeast-1.aws.neon.tech", 
-                        port=5432)
+conn = db.connect(database="YOUR_DATABASE", 
+                        user="YOUR_USER", 
+                        password="YOUR_PASSWORD", 
+                        host="YOUR_HOST", 
+                        port=1234) # Fill this with your own port.
 query = "SELECT * FROM user_cred WHERE email = %s;"
 reg_query = "INSERT INTO user_cred VALUES (%s, %s, %s)"
 proh_char = set('!@#$%^&*()+=[]{};:\'"<>,.?/|\\~ ')
